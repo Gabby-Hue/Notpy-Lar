@@ -20,6 +20,12 @@
                 @endforelse
             </div>
 
+            @if ($notes->hasPages())
+                <div style="margin-top:.75rem;">
+                    {{ $notes->links() }}
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('logout') }}" style="margin-top: 1rem;">
                 @csrf
                 <button type="submit" class="secondary" style="width:100%;">Logout</button>
