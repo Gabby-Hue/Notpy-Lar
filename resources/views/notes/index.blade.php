@@ -37,7 +37,7 @@
 
             <h2>{{ $selectedNote ? 'Edit Note' : 'Buat Note Baru' }}</h2>
 
-            <form method="POST" action="{{ $selectedNote ? route('notes.update', $selectedNote) : route('notes.store') }}">
+            <form method="POST" enctype="multipart/form-data" action="{{ $selectedNote ? route('notes.update', $selectedNote) : route('notes.store') }}">
                 @csrf
                 @if ($selectedNote)
                     @method('PUT')
@@ -51,6 +51,37 @@
                 <div class="field">
                     <label>Isi Note</label>
                     <textarea name="content" placeholder="Tulis catatan Anda di sini...">{{ old('content', $selectedNote->content ?? '') }}</textarea>
+                </div>
+
+                <div class="field">
+                    <label>Gambar (opsional)</label>
+                    <input type="file" name="image" accept="image/*">
+                    @if (! empty($selectedNote?->image_path))
+                        <div style="margin-top:.5rem;">
+                            <img src="{{ asset('storage/'.$selectedNote->image_path) }}" alt="Preview gambar note" style="max-width: 260px; border-radius:.5rem;">
+                        </div>
+                        <label style="display:flex;align-items:center;gap:.4rem;margin-top:.4rem;">
+                            <input type="checkbox" name="remove_image" value="1">
+                            Hapus gambar saat update
+                        </label>
+                    @endif
+                </div>
+
+                <div class="field">
+                    <label>Video (opsional)</label>
+                    <input type="file" name="video" accept="video/mp4,video/quicktime,video/x-msvideo,video/x-matroska,video/webm">
+                    @if (! empty($selectedNote?->video_path))
+                        <div style="margin-top:.5rem;">
+                            <video controls style="max-width: 320px; border-radius:.5rem;">
+                                <source src="{{ asset('storage/'.$selectedNote->video_path) }}">
+                                Browser Anda tidak mendukung preview video.
+                            </video>
+                        </div>
+                        <label style="display:flex;align-items:center;gap:.4rem;margin-top:.4rem;">
+                            <input type="checkbox" name="remove_video" value="1">
+                            Hapus video saat update
+                        </label>
+                    @endif
                 </div>
 
                 <button type="submit">{{ $selectedNote ? 'Update Note' : 'Simpan Note' }}</button>
