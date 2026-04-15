@@ -12,12 +12,18 @@ class NoteController extends Controller
 {
     public function index(Request $request): View
     {
-        $notes = $request->user()->notes()->latest()->get();
+        $notes = $request->user()
+            ->notes()
+            ->select(['id', 'title', 'updated_at'])
+            ->latest()
+            ->paginate(30)
+            ->withQueryString();
 
         $selectedNote = null;
 
         if ($request->filled('note')) {
-            $selectedNote = $request->user()->notes()->find($request->integer('note'));
+            $selectedNoteId = $request->integer('note');
+            $selectedNote = $request->user()->notes()->find($selectedNoteId);
         }
 
         return view('notes.index', [
